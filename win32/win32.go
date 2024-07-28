@@ -34,6 +34,9 @@ func SetClipboardText(str string) (err error) {
 		return
 	}
 	defer internal.CloseClipboard()
+	if err = internal.EmptyClipboard(); err != nil {
+		return
+	}
 	var mem win32.HGLOBAL
 	if mem, err = internal.GlobalAlloc(internal.GMEM_MOVEABLE, win32.SIZE_T((len(str)+1)*2)); err != nil {
 		return

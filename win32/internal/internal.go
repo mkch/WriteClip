@@ -14,6 +14,7 @@ var lzGetClipboardData = lzUser32.NewProc("GetClipboardData")
 var lzSetClipboardData = lzUser32.NewProc("SetClipboardData")
 var lzOpenClipboard = lzUser32.NewProc("OpenClipboard")
 var lzCloseClipboard = lzUser32.NewProc("CloseClipboard")
+var lzEmptyClipboard = lzUser32.NewProc("EmptyClipboard")
 var lzGetDesktopWindow = lzUser32.NewProc("GetDesktopWindow")
 var lzGlobalLock = lzKernel32.NewProc("GlobalLock")
 var lzGlobalAlloc = lzKernel32.NewProc("GlobalAlloc")
@@ -52,6 +53,10 @@ func GetDesktopWindow() win32.HWND {
 func OpenClipboard(hwndOwner win32.HWND) error {
 	sysutil.MustTrue(lzOpenClipboard.Call(uintptr(hwndOwner)))
 	return nil
+}
+
+func EmptyClipboard() error {
+	return sysutil.MustTrue(lzEmptyClipboard.Call())
 }
 
 func CloseClipboard() error {
