@@ -38,7 +38,7 @@ func format(str string, startLineNumber int) string {
 	lines := strings.Split(str, "\n")
 	lineNumberLen := lineNumberStrLen(startLineNumber, lines)
 	for i, line := range lines {
-		lineNumber := fmt.Sprintf("%#"+strconv.Itoa(lineNumberLen)+"d", startLineNumber+i)
+		lineNumber := fmt.Sprintf("%0"+strconv.Itoa(lineNumberLen)+"d", startLineNumber+i)
 		lines[i] = lineNumber + "  " + line
 	}
 	str = strings.Join(lines, "\r\n")
