@@ -27,7 +27,7 @@ func StrlenW(str *win32.WCHAR) int {
 }
 
 func GlobalFree(mem win32.HGLOBAL) error {
-	return sysutil.MustZero[win32.HGLOBAL](lzGlobalFree.Call(uintptr(mem)))
+	return sysutil.MustZero(lzGlobalFree.Call(uintptr(mem)))
 }
 
 func GlobalUnlock(mem win32.HGLOBAL) error {
