@@ -14,7 +14,7 @@ import (
 const VERSION = "0.1"
 
 func main() {
-	startLine := flag.Int("start", 1, "The starting line number.")
+	startLine := flag.Int("start", 1, "The starting line number. -1 for not adding line numbers.")
 	flag.Parse()
 	if flag.NArg() == 1 && flag.Arg(0) == "version" {
 		fmt.Fprintf(os.Stdout, "writeclip %v\n", VERSION)
@@ -31,15 +31,17 @@ func main() {
 
 // format formats str.
 // startLineNumber is the starting number used as the first
-// line number.
+// line number. -1 means no line number.
 func format(str string, startLineNumber int) string {
 	str = strings.ReplaceAll(str, "\r\n", "\n")
 	str = strings.ReplaceAll(str, "\t", "    ")
 	lines := strings.Split(str, "\n")
-	lineNumberLen := lineNumberStrLen(startLineNumber, lines)
-	for i, line := range lines {
-		lineNumber := fmt.Sprintf("%0"+strconv.Itoa(lineNumberLen)+"d", startLineNumber+i)
-		lines[i] = lineNumber + "  " + line
+	if startLineNumber != -1 {
+		lineNumberLen := lineNumberStrLen(startLineNumber, lines)
+		for i, line := range lines {
+			lineNumber := fmt.Sprintf("%0"+strconv.Itoa(lineNumberLen)+"d", startLineNumber+i)
+			lines[i] = lineNumber + "  " + line
+		}
 	}
 	str = strings.Join(lines, "\r\n")
 	return str
