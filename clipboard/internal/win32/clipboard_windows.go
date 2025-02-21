@@ -3,7 +3,7 @@ package win32
 import (
 	"unsafe"
 
-	"github.com/mkch/writeclip/win32/internal"
+	"github.com/mkch/writeclip/clipboard/internal/win32/internal"
 
 	"github.com/mkch/gw/win32"
 	"github.com/mkch/gw/win32/win32util"

@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/mkch/writeclip/win32"
+	"github.com/mkch/writeclip/clipboard"
 )
 
 const VERSION = "0.1"
@@ -21,12 +21,12 @@ func main() {
 		return
 	}
 
-	str, err := win32.ClipboardText()
+	str, err := clipboard.Text()
 	if err != nil {
 		log.Fatal(err)
 	}
 	str = format(str, *startLine)
-	win32.SetClipboardText(str)
+	clipboard.SetText(str)
 }
 
 // format formats str.
