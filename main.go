@@ -25,6 +25,9 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	if len(str) == 0 {
+		return
+	}
 	str = format(str, *startLine)
 	clipboard.SetText(str)
 }

@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"errors"
 	"unsafe"
 
 	"github.com/mkch/gw/win32"
@@ -68,7 +69,17 @@ type ClipboardFormat win32.UINT
 const CF_UNICODETEXT ClipboardFormat = 13
 
 func GetClipboardData(format ClipboardFormat) (win32.HGLOBAL, error) {
-	return sysutil.MustNotZero[win32.HGLOBAL](lzGetClipboardData.Call(uintptr(format)))
+	r1, _, err := lzGetClipboardData.Call(uintptr(format))
+	// r1 == 0 && err == 0: clipboard is empty.
+	if r1 == 0 {
+		var errno windows.Errno
+		// The error will be guaranteed to contain windows.Errno
+		errors.As(err, &errno)
+		if errno != 0 {
+			return 0, err
+		}
+	}
+	return win32.HGLOBAL(r1), nil
 }
 
 func SetClipboardData(format ClipboardFormat, handle win32.HGLOBAL) error {

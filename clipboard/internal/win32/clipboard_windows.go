@@ -18,6 +18,8 @@ func ClipboardText() (str string, err error) {
 	var mem win32.HGLOBAL
 	if mem, err = internal.GetClipboardData(internal.CF_UNICODETEXT); err != nil {
 		return
+	} else if mem == 0 { // clipboard is empty
+		return "", nil
 	}
 	var ptr win32.PVOID
 	if ptr, err = internal.GlobalLock(mem); err != nil {
