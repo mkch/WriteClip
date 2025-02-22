@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"math"
 	"os"
 	"strconv"
 	"strings"
@@ -11,10 +12,11 @@ import (
 	"github.com/mkch/writeclip/clipboard"
 )
 
-const VERSION = "0.1"
+const VERSION = "0.2"
 
 func main() {
 	startLine := flag.Int("start", 1, "The starting line number. -1 for not adding line numbers.")
+	trim := flag.Bool("trim", true, "Trim the common leading spaces of each line.")
 	flag.Parse()
 	if flag.NArg() == 1 && flag.Arg(0) == "version" {
 		fmt.Fprintf(os.Stdout, "writeclip %v\n", VERSION)
@@ -28,17 +30,22 @@ func main() {
 	if len(str) == 0 {
 		return
 	}
-	str = format(str, *startLine)
+	str = format(str, *startLine, *trim)
 	clipboard.SetText(str)
 }
 
 // format formats str.
 // startLineNumber is the starting number used as the first
 // line number. -1 means no line number.
-func format(str string, startLineNumber int) string {
+// If trimCommonLeading is true, the common leading spaces
+// in each line will be trimmed.
+func format(str string, startLineNumber int, trim bool) string {
 	str = strings.ReplaceAll(str, "\r\n", "\n")
 	str = strings.ReplaceAll(str, "\t", "    ")
 	lines := strings.Split(str, "\n")
+	if trim {
+		trimLeadingSpaces(lines)
+	}
 	if startLineNumber != -1 {
 		lineNumberLen := lineNumberStrLen(startLineNumber, lines)
 		for i, line := range lines {
@@ -48,6 +55,24 @@ func format(str string, startLineNumber int) string {
 	}
 	str = strings.Join(lines, "\r\n")
 	return str
+}
+
+// trimLeadingSpaces trims the common leading spaces in each line.
+func trimLeadingSpaces(lines []string) {
+	if len(lines) == 0 {
+		return
+	}
+	var common = math.MaxInt
+	for _, line := range lines {
+		n := len(line) - len(strings.TrimLeft(line, " "))
+		common = min(n, common)
+	}
+	if common == 0 {
+		return
+	}
+	for i, line := range lines {
+		lines[i] = line[common:]
+	}
 }
 
 // lineNumberStrLen returns the max length of line number strings.
