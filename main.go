@@ -64,13 +64,19 @@ func trimLeadingSpaces(lines []string) {
 	}
 	var common = math.MaxInt
 	for _, line := range lines {
+		if len(line) == 0 {
+			continue
+		}
 		n := len(line) - len(strings.TrimLeft(line, " "))
 		common = min(n, common)
 	}
-	if common == 0 {
+	if common == math.MaxInt {
 		return
 	}
 	for i, line := range lines {
+		if len(line) == 0 {
+			continue
+		}
 		lines[i] = line[common:]
 	}
 }
